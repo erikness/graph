@@ -9,7 +9,7 @@ public class ParsedMathFunction extends MathFunction
 	
 	public ParsedMathFunction(String informalExpression, Color color)
 	{
-		this.expression = toFormal(informalExpression);
+		this.expression = informalToFormal(informalExpression);
 		this.setColor(color);
 	}
 	
@@ -126,7 +126,7 @@ public class ParsedMathFunction extends MathFunction
 		return calculate(this.expression, x);
 	}
 	
-	private String toFormal(String input)
+	private String informalToFormal(String input)
 	{
 		return input;
 	}
