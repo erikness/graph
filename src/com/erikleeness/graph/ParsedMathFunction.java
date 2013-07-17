@@ -3,9 +3,12 @@ package com.erikleeness.graph;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import com.erikleeness.graph.expression.Term;
+
 public class ParsedMathFunction extends MathFunction
 {
 	private String expression;
+	private Term term;
 	
 	public ParsedMathFunction(String informalExpression, Color color)
 	{
@@ -129,6 +132,23 @@ public class ParsedMathFunction extends MathFunction
 	private String informalToFormal(String input)
 	{
 		return input;
+	}
+	
+	public double calculate2(double x)
+	{
+		Term term = termFromFormalExpression(this.expression);
+		return term.evaluate(x);
+	}
+	
+	public Term termFromFormalExpression(String formalExpression)
+	{
+		while (true) {
+			// strip function name and parens
+			// identify the class that corresponds to the function
+			// get the function's arguments in a list with splitIntoMultipleArguments
+			// pass those arguments to "new [class we just got]"
+			// call evaluate(x) on that class
+		}
 	}
 	
 	private ArrayList<String> splitIntoMultipleArguments(String expression)
