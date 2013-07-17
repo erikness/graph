@@ -1,6 +1,6 @@
-package com.erikleeness.sort.algorithms;
+package com.erikleeness.graph.sort.algorithms;
 
-import com.erikleeness.sort.SortAlgorithm;
+import com.erikleeness.graph.sort.SortAlgorithm;
 
 public class SelectionSortAlgorithm extends SortAlgorithm
 {
