@@ -18,9 +18,8 @@ public class OrderOfOperations
 			tier2 = Arrays.asList(Class.forName(packagePathPrefix + "Product"), Class.forName(packagePathPrefix + "Quotient"));
 			tier1 = Arrays.asList(Class.forName(packagePathPrefix + "Sum"), Class.forName(packagePathPrefix + "Difference"));
 		} catch (ClassNotFoundException e) {
-			System.out.println("Some programmer fucked up - check the OrderOfOperations class and see that " +
+			throw new RuntimeException("Some programmer fucked up - check the OrderOfOperations class and see that " +
 					"all the classes referenced are valid.");
-			e.printStackTrace();
 		}
 	}
 	
