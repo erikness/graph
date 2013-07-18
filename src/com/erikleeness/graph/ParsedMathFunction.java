@@ -41,7 +41,7 @@ public class ParsedMathFunction extends MathFunction
 	{
 		int parenIndex = formalExpression.indexOf("(");
 		String functionName = formalExpression.substring(0, parenIndex);
-		String functionParamString = formalExpression.substring(parenIndex, formalExpression.length() - 1);
+		String functionParamString = formalExpression.substring(parenIndex + 1, formalExpression.length() - 1);
 		
 		// Special cases (they terminate the recursion)
 		
@@ -143,7 +143,7 @@ public class ParsedMathFunction extends MathFunction
 		
 		if (argumentStrings.isEmpty()) {
 			// There were no non-paren'd argument separators, meaning there's only one argument
-			argumentStrings.add(expression);
+			argumentStrings.add(paramString);
 		}
 		
 		return argumentStrings;
