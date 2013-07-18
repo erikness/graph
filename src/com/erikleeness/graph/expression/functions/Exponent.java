@@ -13,7 +13,7 @@ public class Exponent implements Term
 		this.power = power;
 	}
 
-	public static Exponent of(List<Object> params)
+	public static Exponent of(List<?> params)
 	{
 		if (params.size() != 2) throw new IllegalArgumentException("Must have exactly two elements in param list");
 		if ( !(params.get(0) instanceof Term) ) throw new IllegalArgumentException("Parameter 1 must be a Term");

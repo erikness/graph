@@ -12,7 +12,7 @@ public class Sine implements Term
 		this.term = term;
 	}
 	
-	public static Sine of(List<Object> params)
+	public static Sine of(List<?> params)
 	{
 		if (params.size() != 1) throw new IllegalArgumentException("Must have exactly one element in param list");
 		if ( !(params.get(0) instanceof Term) ) throw new IllegalArgumentException("Parameter must be a Term");

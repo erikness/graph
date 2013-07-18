@@ -16,7 +16,7 @@ public class Variable implements Term
 		this("x");
 	}
 	
-	public static Variable of(List<Object> params)
+	public static Variable of(List<?> params)
 	{
 		if (params.size() == 0) return new Variable();
 		if (params.size() > 1) throw new IllegalArgumentException("Must have either one or no elements in param list");

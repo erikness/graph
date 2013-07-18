@@ -16,7 +16,7 @@ public class Product implements Term
 		this.right = right;
 	}
 
-	public static Product of(List<Object> params)
+	public static Product of(List<?> params)
 	{
 		if (params.size() != 2) throw new IllegalArgumentException("Must have exactly two elements in param list");
 		if ( !(params.get(0) instanceof Term) ) throw new IllegalArgumentException("Parameter 1 must be a Term");
