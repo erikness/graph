@@ -1,6 +1,8 @@
-package com.erikleeness.graph.expression;
+package com.erikleeness.graph.expression.functions;
 
 import java.util.List;
+
+import com.erikleeness.graph.expression.OrderOfOperations;
 
 public class Quotient implements Term
 {

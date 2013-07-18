@@ -1,4 +1,4 @@
-package com.erikleeness.graph.expression;
+package com.erikleeness.graph.expression.functions;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;

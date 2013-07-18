@@ -1,5 +1,14 @@
 package com.erikleeness.graph.expression;
 
+import com.erikleeness.graph.expression.functions.Constant;
+import com.erikleeness.graph.expression.functions.Cosine;
+import com.erikleeness.graph.expression.functions.Exponent;
+import com.erikleeness.graph.expression.functions.Product;
+import com.erikleeness.graph.expression.functions.SquareRoot;
+import com.erikleeness.graph.expression.functions.Tangent;
+import com.erikleeness.graph.expression.functions.Term;
+import com.erikleeness.graph.expression.functions.Variable;
+
 public class Tester
 {
 	public static void main(String[] args)

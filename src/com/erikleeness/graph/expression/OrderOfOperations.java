@@ -3,6 +3,8 @@ package com.erikleeness.graph.expression;
 import java.util.Arrays;
 import java.util.List;
 
+import com.erikleeness.graph.expression.functions.Term;
+
 public class OrderOfOperations
 {
 	private static List<Class<? extends Object>> tier3;
@@ -10,10 +12,11 @@ public class OrderOfOperations
 	private static List<Class<? extends Object>> tier1;
 	
 	static {
+		String packagePathPrefix = "com.erikleeness.expression.functions.";
 		try {
-			tier3 = Arrays.asList(Class.forName("expression.Exponent"), Class.forName("expression.SquareRoot"));
-			tier2 = Arrays.asList(Class.forName("expression.Product"), Class.forName("expression.quotient"));
-			tier1 = Arrays.asList(Class.forName("expression.Sum"), Class.forName("expression.Difference"));
+			tier3 = Arrays.asList(Class.forName(packagePathPrefix + "Exponent"), Class.forName(packagePathPrefix + "SquareRoot"));
+			tier2 = Arrays.asList(Class.forName(packagePathPrefix + "Product"), Class.forName(packagePathPrefix + "Quotient"));
+			tier1 = Arrays.asList(Class.forName(packagePathPrefix + "Sum"), Class.forName(packagePathPrefix + "Difference"));
 		} catch (ClassNotFoundException e) {
 			System.out.println("Some programmer fucked up - check the OrderOfOperations class and see that " +
 					"all the classes referenced are valid.");

@@ -1,40 +1,41 @@
-package com.erikleeness.graph.expression;
+package com.erikleeness.graph.expression.functions;
 
 import java.util.List;
 
-public class Secant implements Term
+
+public class Cosine implements Term
 {
 	private Term term;
 	
-	public Secant(Term term)
+	public Cosine(Term term)
 	{
 		this.term = term;
 	}
 	
-	public static Secant of(List<Object> params)
+	public static Cosine of(List<Object> params)
 	{
 		if (params.size() != 1) throw new IllegalArgumentException("Must have exactly one element in param list");
 		if ( !(params.get(0) instanceof Term) ) throw new IllegalArgumentException("Parameter must be a Term");
-		return new Secant( (Term) (params.get(0)) );
+		return new Cosine( (Term) (params.get(0)));
 	}
 	
 	@Override
 	public double evaluate(double xValue)
 	{
-		return 1 / Math.cos( term.evaluate(xValue) );
+		return Math.cos( term.evaluate(xValue) );
 	}
 
 	@Override
 	public Term derive()
 	{
-		// dterm * sec term * tan term
-		return new Product( term.derive(), new Product( new Secant(term), new Tangent(term)));
+		// dterm * -sin(term)
+		return new Product(term.derive(), new Product(new Constant(-1), new Sine(term)));
 	}
-	
+
 	@Override
 	public String toString()
 	{
-		return "sec(" + term.toString() + ")";
+		return "cos(" + term.toString() + ")";
 	}
 
 }

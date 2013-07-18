@@ -1,4 +1,4 @@
-package com.erikleeness.graph.expression;
+package com.erikleeness.graph.expression.functions;
 
 public interface Term
 {
