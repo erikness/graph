@@ -1,9 +1,14 @@
 package com.erikleeness.graph;
 
 import java.awt.Color;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 
-import com.erikleeness.graph.expression.Term;
+import com.erikleeness.graph.expression.functions.Constant;
+import com.erikleeness.graph.expression.functions.Term;
+import com.erikleeness.graph.expression.functions.Variable;
 
 public class ParsedMathFunction extends MathFunction
 {
@@ -13,6 +18,7 @@ public class ParsedMathFunction extends MathFunction
 	public ParsedMathFunction(String informalExpression, Color color)
 	{
 		this.expression = informalToFormal(informalExpression);
+		term = termFromFormalExpression(this.expression);
 		this.setColor(color);
 	}
 	
@@ -21,112 +27,9 @@ public class ParsedMathFunction extends MathFunction
 		this(expression, Color.black);
 	}
 	
-	public double calculate(String workingExpression, double x)
-	{
-		double result = 0;
-		String[] parts = workingExpression.split("\\(", 2);
-		workingExpression = parts[1].substring(0, parts[1].length() - 1);
-		String function = parts[0];
-		
-		ArrayList<String> arguments = splitIntoMultipleArguments(workingExpression);
-		if (arguments.get(0) == workingExpression) {
-			
-			
-			if (workingExpression == "x") {
-				result = x;	
-			} else if (isConstant(workingExpression)) {
-				result = Double.parseDouble(workingExpression);
-			} else {
-				result = calculate(workingExpression, x);
-			}
-			
-			switch (function) {
-				case "sin":
-					result = Math.sin(result);
-					break;
-				case "cos":
-					result = Math.cos(result);
-					break;
-				case "tan":
-					result = Math.tan(result);
-					break;
-				case "asin":
-					result = Math.asin(result);
-					break;
-				case "acos":
-					result = Math.acos(result);
-					break;
-				case "atan":
-					result = Math.atan(result);
-					break;
-				case "sec":
-					result = 1/Math.cos(result);
-					break;
-				case "csc":
-					result = 1/Math.sin(result);
-					break;
-				case "cot":
-					result = 1/Math.tan(result);
-					break;
-				case "asec":
-					result = Math.acos(1/result);
-					break;
-				case "acsc":
-					result = Math.asin(1/result);
-					break;
-				case "acot":
-					result = Math.atan(1/result);
-					break;
-				case "sinh":
-					result = Math.sinh(result);
-					break;
-				case "cosh":
-					result = Math.cosh(result);
-					break;
-				case "tanh":
-					result = Math.tanh(result);
-					break;
-				
-				case "ln":
-					result = Math.log(result);
-					break;
-				case "log":
-					result = Math.log10(result);
-					break;
-				case "inverse":
-					result = 1/result;
-					break;
-			}
-			
-			
-		} else { // Multiple arguments!
-			// Recursively evaluate each of them
-			double[] results = new double[arguments.size()];
-			for (int i = 0; i < arguments.size(); i++) {
-				results[i] = calculate(arguments.get(i), x);
-			}
-			
-			switch(function) {
-			case "add":
-				result = results[0] + results[1];
-				break;
-			case "subtract":
-				result = results[0] - results[1];
-				break;
-			case "multiply":
-				result = results[0] + results[1];
-				break;
-			}
-				
-		}
-		
-		
-		return result;
-	}
-	
 	public double calculate(double x)
 	{
-		return calculate(this.expression, x);
+		return term.evaluate(x);
 	}
 	
 	private String informalToFormal(String input)
@@ -134,65 +37,115 @@ public class ParsedMathFunction extends MathFunction
 		return input;
 	}
 	
-	public double calculate2(double x)
+	private Term termFromFormalExpression(String formalExpression)
 	{
-		Term term = termFromFormalExpression(this.expression);
-		return term.evaluate(x);
-	}
-	
-	public Term termFromFormalExpression(String formalExpression)
-	{
-		while (true) {
-			// strip function name and parens
-			// identify the class that corresponds to the function
-			// get the function's arguments in a list with splitIntoMultipleArguments
-			// pass those arguments to "new [class we just got]"
-			// call evaluate(x) on that class
+		int parenIndex = formalExpression.indexOf("(");
+		String functionName = formalExpression.substring(0, parenIndex);
+		String functionParamString = formalExpression.substring(parenIndex, formalExpression.length() - 1);
+		
+		// Special cases (they terminate the recursion)
+		
+		if (functionName.equals("variable")) {
+			if (functionParamString.isEmpty()) {
+				return new Variable();
+			} else {
+				return new Variable(functionParamString);
+			}
 		}
+		
+		if (functionName.equals("constant")) {
+			return new Constant( Double.parseDouble(functionParamString) );
+		}
+		
+		// Other, nonterminating cases
+		
+		List<String> paramsAsStrings = splitIntoArguments(functionParamString);
+		List<Term> params = new ArrayList<Term>();
+		for (String paramString : paramsAsStrings) {
+			params.add( termFromFormalExpression(paramString) );
+		}
+		
+		Term result = reflectivelyCreateTerm(functionName, params);
+		
+		return result;
 	}
 	
-	private ArrayList<String> splitIntoMultipleArguments(String expression)
+	/**
+	 * Note that this class throws a lot of RuntimeExceptions. It should. Many of these things should
+	 * not happen unless a file is removed or a programmer otherwise screws up.
+	 * 
+	 * @param functionName
+	 * @param params
+	 * @return
+	 */
+	private Term reflectivelyCreateTerm(String functionName, List<?> params)
+	{
+		Class<?> resultClass;
+		try {
+			resultClass = Class.forName("com.erikleeness.graph.expression.functions." + functionName);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Someone passed ParsedMathFunction.termFromFormalExpression an expression" +
+					"with a bad function name.");
+		}
+		
+		Method factory;
+		try {
+			factory = resultClass.getMethod("of", List.class);
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException("Somehow the of() method failed to resolve on class " + resultClass);
+		} catch (SecurityException e) {
+			throw new RuntimeException("Somehow the of() method was denied access on class " + resultClass);
+		}
+		
+		Term result;
+		try {
+			result = (Term) factory.invoke(null, params);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("Somehow the of() method was denied access on class " + resultClass);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException("The of() method was not marked as static for some reason on class " + resultClass);
+		} catch (InvocationTargetException e) {
+			throw new RuntimeException("of() threw an exception! Can you believe that?");
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * @precondition		paramString must be formatted as a list of terms (possible 0 or 1)
+	 * 						with no parens on the outside and commas separating them.
+	 * @param paramString
+	 * @return
+	 */
+	private List<String> splitIntoArguments(String paramString)
 	{
 		boolean insideParen = false;
 		int parenCount = 0;
+		int currentArgumentStartIndex = 0;
 		int index;
+		List<String> argumentStrings = new ArrayList<String>();
+		
 		for (index = 0; index < expression.length(); index++) {
 			if (expression.charAt(index) == '(') {
 				parenCount++;
 				insideParen = true;
 			} else if (expression.charAt(index) == ')') {
 				parenCount--;
+				if (parenCount == 0) insideParen = false;
 			} else {
-				if (insideParen && parenCount == 0) {
-					break;
+				if ( ! insideParen && expression.charAt(index) == ',') {
+					// We've got ourselves an old-fashioned argument separator!
+					argumentStrings.add( expression.substring(currentArgumentStartIndex, index) );
+					currentArgumentStartIndex = index+1;
 				}
 			}
 		}
-
-		System.out.println(index);
-		System.out.println(expression);
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		if (argumentStrings.isEmpty()) {
+			// There were no non-paren'd argument separators, meaning there's only one argument
+			argumentStrings.add(expression);
 		}
-		ArrayList<String> result = new ArrayList<String>();
-		if (index != expression.length()) {
-			// There are at least 2 arguments
-			result.add(expression.substring(0, index));
-			System.out.println("@");
-			result.addAll(splitIntoMultipleArguments(expression.substring(index)));
-		} else {
-			// One argument
-			result.add(expression);
-		}
-		return result;
-			
-	}
-	
-	private boolean isConstant(String s)
-	{
-		return s.matches("((-|\\+)?[0-9]+(\\.[0-9]+)?)+ ");
+		
+		return argumentStrings;
 	}
 }
