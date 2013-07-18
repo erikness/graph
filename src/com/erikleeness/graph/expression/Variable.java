@@ -1,5 +1,7 @@
 package com.erikleeness.graph.expression;
 
+import java.util.List;
+
 public class Variable implements Term
 {
 	private String alias;
@@ -12,6 +14,14 @@ public class Variable implements Term
 	public Variable()
 	{
 		this("x");
+	}
+	
+	public static Variable of(List<Object> params)
+	{
+		if (params.size() == 0) return new Variable();
+		if (params.size() > 1) throw new IllegalArgumentException("Must have either one or no elements in param list");
+		if ( !(params.get(0) instanceof String) ) throw new IllegalArgumentException("Parameter must be a String");
+		return new Variable( (String) (params.get(0)) );
 	}
 	
 	@Override

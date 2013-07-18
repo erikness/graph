@@ -2,6 +2,6 @@ package com.erikleeness.graph.expression;
 
 public interface Term
 {
-	public double evaluate(double xValue);
-	public Term derive();
+	public abstract double evaluate(double xValue);
+	public abstract Term derive();
 }

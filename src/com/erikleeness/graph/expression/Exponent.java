@@ -1,5 +1,7 @@
 package com.erikleeness.graph.expression;
 
+import java.util.List;
+
 public class Exponent implements Term
 {
 	private Term base;
@@ -9,6 +11,14 @@ public class Exponent implements Term
 	{
 		this.base = base;
 		this.power = power;
+	}
+
+	public static Exponent of(List<Object> params)
+	{
+		if (params.size() != 2) throw new IllegalArgumentException("Must have exactly two elements in param list");
+		if ( !(params.get(0) instanceof Term) ) throw new IllegalArgumentException("Parameter 1 must be a Term");
+		if ( !(params.get(1) instanceof Term) ) throw new IllegalArgumentException("Parameter 2 must be a Term");
+		return new Exponent( (Term) (params.get(0)), (Term) (params.get(1)) );
 	}
 	
 	@Override

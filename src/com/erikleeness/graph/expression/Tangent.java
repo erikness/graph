@@ -1,5 +1,7 @@
 package com.erikleeness.graph.expression;
 
+import java.util.List;
+
 public class Tangent implements Term
 {
 	private Term term;
@@ -7,6 +9,13 @@ public class Tangent implements Term
 	public Tangent(Term term)
 	{
 		this.term = term;
+	}
+	
+	public static Tangent of(List<Object> params)
+	{
+		if (params.size() != 1) throw new IllegalArgumentException("Must have exactly one element in param list");
+		if ( !(params.get(0) instanceof Term) ) throw new IllegalArgumentException("Parameter must be a Term");
+		return new Tangent( (Term) (params.get(0)) );
 	}
 	
 	@Override

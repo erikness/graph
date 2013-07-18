@@ -1,5 +1,7 @@
 package com.erikleeness.graph.expression;
 
+import java.util.List;
+
 public class Product implements Term
 {
 	// Proper word are multiplicand and multiplier
@@ -12,6 +14,14 @@ public class Product implements Term
 		this.right = right;
 	}
 
+	public static Product of(List<Object> params)
+	{
+		if (params.size() != 2) throw new IllegalArgumentException("Must have exactly two elements in param list");
+		if ( !(params.get(0) instanceof Term) ) throw new IllegalArgumentException("Parameter 1 must be a Term");
+		if ( !(params.get(1) instanceof Term) ) throw new IllegalArgumentException("Parameter 2 must be a Term");
+		return new Product( (Term) (params.get(0)), (Term) (params.get(1)) );
+	}
+	
 	@Override
 	public double evaluate(double xValue)
 	{

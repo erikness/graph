@@ -1,5 +1,7 @@
 package com.erikleeness.graph.expression;
 
+import java.util.List;
+
 public class Quotient implements Term
 {
 	// Proper words are dividend and divisor
@@ -11,7 +13,15 @@ public class Quotient implements Term
 		this.high = high;
 		this.low = low;
 	}
-
+	
+	public static Quotient of(List<Object> params)
+	{
+		if (params.size() != 2) throw new IllegalArgumentException("Must have exactly two elements in param list");
+		if ( !(params.get(0) instanceof Term) ) throw new IllegalArgumentException("Parameter 1 must be a Term");
+		if ( !(params.get(1) instanceof Term) ) throw new IllegalArgumentException("Parameter 2 must be a Term");
+		return new Quotient( (Term) (params.get(0)), (Term) (params.get(1)) );
+	}
+	
 	@Override
 	public double evaluate(double xValue)
 	{
