@@ -144,6 +144,9 @@ public class ParsedMathFunction extends MathFunction
 		if (argumentStrings.isEmpty()) {
 			// There were no non-paren'd argument separators, meaning there's only one argument
 			argumentStrings.add(paramString);
+		} else {
+			// Add the last argument
+			argumentStrings.add( paramString.substring(currentArgumentStartIndex, paramString.length()) );
 		}
 		
 		return argumentStrings;
