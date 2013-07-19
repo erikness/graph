@@ -39,13 +39,18 @@ public class ParsedMathFunction extends MathFunction
 	
 	private Term termFromFormalExpression(String formalExpression)
 	{
+		
 		int parenIndex = formalExpression.indexOf("(");
+		
 		String functionName = formalExpression.substring(0, parenIndex);
+		// "ucwords" on functioname so fUnCtIOn becomes Function
+		functionName = functionName.substring(0, 1).toUpperCase() + functionName.substring(1, functionName.length());
+		
 		String functionParamString = formalExpression.substring(parenIndex + 1, formalExpression.length() - 1);
 		
 		// Special cases (they terminate the recursion)
 		
-		if (functionName.equals("variable")) {
+		if (functionName.equals("Variable")) {
 			if (functionParamString.isEmpty()) {
 				return new Variable();
 			} else {
@@ -53,7 +58,7 @@ public class ParsedMathFunction extends MathFunction
 			}
 		}
 		
-		if (functionName.equals("constant")) {
+		if (functionName.equals("Constant")) {
 			return new Constant( Double.parseDouble(functionParamString) );
 		}
 		
@@ -80,9 +85,6 @@ public class ParsedMathFunction extends MathFunction
 	 */
 	private Term reflectivelyCreateTerm(String functionName, List<?> params)
 	{
-		// "ucwords" on functioname so fUnCtIOn becomes Function
-		functionName = functionName.substring(0, 1).toUpperCase() + functionName.substring(1, functionName.length());
-		
 		Class<?> resultClass;
 		try {
 			resultClass = Class.forName("com.erikleeness.graph.expression.functions." + functionName);
