@@ -44,7 +44,7 @@ public class ParsedMathFunction extends MathFunction
 		
 		String functionName = formalExpression.substring(0, parenIndex);
 		// "ucwords" on functioname so fUnCtIOn becomes Function
-		functionName = functionName.substring(0, 1).toUpperCase() + functionName.substring(1, functionName.length());
+		functionName = functionName.substring(0, 1).toUpperCase() + functionName.substring(1, functionName.length()).toLowerCase();
 		
 		String functionParamString = formalExpression.substring(parenIndex + 1, formalExpression.length() - 1);
 		
