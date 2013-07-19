@@ -125,17 +125,17 @@ public class ParsedMathFunction extends MathFunction
 		int index;
 		List<String> argumentStrings = new ArrayList<String>();
 		
-		for (index = 0; index < expression.length(); index++) {
-			if (expression.charAt(index) == '(') {
+		for (index = 0; index < paramString.length(); index++) {
+			if (paramString.charAt(index) == '(') {
 				parenCount++;
 				insideParen = true;
-			} else if (expression.charAt(index) == ')') {
+			} else if (paramString.charAt(index) == ')') {
 				parenCount--;
 				if (parenCount == 0) insideParen = false;
 			} else {
-				if ( ! insideParen && expression.charAt(index) == ',') {
+				if ( ! insideParen && paramString.charAt(index) == ',') {
 					// We've got ourselves an old-fashioned argument separator!
-					argumentStrings.add( expression.substring(currentArgumentStartIndex, index) );
+					argumentStrings.add( paramString.substring(currentArgumentStartIndex, index) );
 					currentArgumentStartIndex = index+1;
 				}
 			}
