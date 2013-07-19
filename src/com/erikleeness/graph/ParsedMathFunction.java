@@ -105,7 +105,7 @@ public class ParsedMathFunction extends MathFunction
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException("The of() method was not marked as static for some reason on class " + resultClass);
 		} catch (InvocationTargetException e) {
-			throw new RuntimeException("of() threw an exception! Can you believe that?");
+			throw new RuntimeException(e);
 		}
 		
 		return result;
