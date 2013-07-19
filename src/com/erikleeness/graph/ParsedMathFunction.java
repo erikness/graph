@@ -80,6 +80,9 @@ public class ParsedMathFunction extends MathFunction
 	 */
 	private Term reflectivelyCreateTerm(String functionName, List<?> params)
 	{
+		// "ucwords" on functioname so fUnCtIOn becomes Function
+		functionName = functionName.substring(0, 1).toUpperCase() + functionName.substring(1, functionName.length());
+		
 		Class<?> resultClass;
 		try {
 			resultClass = Class.forName("com.erikleeness.graph.expression.functions." + functionName);
