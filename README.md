@@ -1,5 +1,5 @@
 # Graph
-_Includes a mathematical expression parser and object model_
+_Includes a mathematical expression parser and object model_ 
 _Includes animated sort algorithms as demo of the functionality_
 
 This project was meant for this and similar use cases:
