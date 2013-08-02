@@ -45,12 +45,20 @@ public class Root implements Term
 		String result;
 		byte[] resultByteArray;
 		
+		String prefix;
+		String degreeString = degree.toString();
+		if ("2.0".equals(degreeString)) {
+			prefix = "";
+		} else {
+			prefix = "<" + degreeString + ">";
+		}
+		
 		try {
-			result = new String("<" + degree.toString() + ">√(" + term.toString() + ")");
+			result = new String(prefix + "√(" + term.toString() + ")");
 			resultByteArray = result.getBytes("UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			// What the fuck doesn't support UTF-8?
-			result = "sqrt<" + degree.toString() + ">(" + term.toString() + ")";
+			result = "sqrt" + prefix + "(" + term.toString() + ")";
 			resultByteArray = result.getBytes();
 		}
 		
